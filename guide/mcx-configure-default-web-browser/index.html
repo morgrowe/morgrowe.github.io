@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html>
+  <head>
+      <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>MCX:  Configure default web browser | Ehcho.com</title>
+      <meta name="viewport" content="width=device-width">
+      <link href="http://fonts.googleapis.com/css?family=Raleway:300|Noto+Sans:400,700" rel="stylesheet" type="text/css">
+      <link rel="stylesheet" href="/css/main.css">
+      <meta name="description" content="We're going to be creating a custom launch services file, which will set the default web browser to Google Chrome. You can use the same technique for setting other web browsers as default, which I'll cover later on.">
+      <link rel="author" href="https://plus.google.com/100277447707872105379/posts">
+      
+  </head>
+  <body>
+
+    <div class="header-wrap">
+
+        <header class="main-header group">
+
+	<a href="/" class="site-title">
+	  <h1>Ehcho.com</h1>
+	</a>
+
+	<nav class="main-nav">
+
+	  <a href="/">Home</a><a href="/guide">Guides</a><a href="/snippet">Snippets</a>
+	  
+	</nav><!-- /main-nav -->
+
+</header><!-- /main-header -->
+
+    </div><!-- /header-wrap -->
+
+    <div class="outer-grid group">
+
+      <div class="grid group">
+
+        <div class="grid-2-3">
+
+          <div class="module breadcrumbs half-padding">
+
+  <p><a href="/">Home</a> &rarr; <a href="/guide"><span class="categories">guide</span></a> &rarr; MCX:  Configure default web browser</p>
+
+</div><!-- /breadcrums -->
+
+          <article class="module post">
+
+					  <h2 class="post-title">MCX:  Configure default web browser</h2>
+
+						<p class="date">By Morgan Rowe | 23 Sep 2013</p>
+
+						<p>Managed Client for OS X, or MCX for short, refers to configuring preferences on managed Macs.  Workgroup Manager can apply these preferences based on users, user groups, computers, and computer groups.  You can create your own groups, or import them from Active Directory, or import them from an existing Open Directory server.</p>
+
+<p>I'm going to assume you've got a functioning OS X server with Workgroup Manager installed.  I'm using OS X 10.8.4 Server, and Workgroup Manager 10.8.  The functions and techniques used in this guide can be used with OS X Lion Server.  I haven't tested earlier versions of OS X, but I can't imagine there being much of a difference.</p>
+
+<p>We're going to be creating a custom launch services file, which will set the default web browser to <a href="http://www.google.co.uk/chrome" target="_blank">Google Chrome</a>. You can use the same technique for setting other web browsers as default, which I'll cover later on.</p>
+
+
+<h3>Create the Property List (.plist)</h3>
+
+<p>Open a plain text editor.  I used <a href="http://www.sublimetext.com/2" target="_blank">Sublime Text 2</a>, but TextEdit will also work.</p>
+
+<p>If you choose to use TextEdit, you'll have to ensure its plain text editing mode is enabled.  You can change this by going into TextEdit's preferences, and changing the "Format" option to "Plain Text".  TextEdit can be found within <code>/Applications</code>.</p>
+
+<a href="/img/guide-ss/configure-default-web-browser-text-edit-plain-text.jpg"><img src="/img/guide-ss/configure-default-web-browser-text-edit-plain-text.jpg" class="guide-ss" alt="MCX:  Configure default web browser - TextEdit example" title="Change TextEdit's editing mode to plain text"></a>
+
+<p>It doesn't matter which machine you create the Property List on, but the file will have to be copied to your server at some point.  You could install Workgroup Manager on your day to day Mac, and configure the preference from there, but as you can VNC into your server from any Mac, there's not much point in doing this.</p>
+
+<p>Copy and paste the following code into your plain text editor:</p>
+
+<code class="multiline"><pre>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;!DOCTYPE plist PUBLIC &quot;-//Apple//DTD PLIST 1.0//EN&quot; &quot;http://www.apple.com/DTDs/PropertyList-1.0.dtd&quot;&gt;
+&lt;plist version=&quot;1.0&quot;&gt;
+  &lt;dict&gt;
+    &lt;key&gt;LSHandlers&lt;/key&gt;
+    &lt;array&gt;
+      &lt;dict&gt;
+        &lt;key&gt;LSHandlerRoleAll&lt;/key&gt;
+        &lt;string&gt;com.google.chrome&lt;/string&gt;
+        &lt;key&gt;LSHandlerURLScheme&lt;/key&gt;
+        &lt;string&gt;http&lt;/string&gt;
+      &lt;/dict&gt;
+      &lt;dict&gt;
+        &lt;key&gt;LSHandlerRoleAll&lt;/key&gt;
+        &lt;string&gt;com.google.chrome&lt;/string&gt;
+        &lt;key&gt;LSHandlerURLScheme&lt;/key&gt;
+        &lt;string&gt;https&lt;/string&gt;
+      &lt;/dict&gt;
+      &lt;dict&gt;
+        &lt;key&gt;LSHandlerContentType&lt;/key&gt;
+        &lt;string&gt;public.html&lt;/string&gt;
+        &lt;key&gt;LSHandlerRoleViewer&lt;/key&gt;
+        &lt;string&gt;com.google.chrome&lt;/string&gt;
+      &lt;/dict&gt;
+      &lt;dict&gt;
+        &lt;key&gt;LSHandlerContentType&lt;/key&gt;
+        &lt;string&gt;public.url&lt;/string&gt;
+        &lt;key&gt;LSHandlerRoleViewer&lt;/key&gt;
+        &lt;string&gt;com.google.chrome&lt;/string&gt;
+      &lt;/dict&gt;
+    &lt;/array&gt;
+  &lt;/dict&gt;
+&lt;/plist&gt;</pre></code>
+
+<p>Save it to your Desktop as <code>"com.apple.LaunchServices.plist"</code>.</p>
+
+<p>Although the file may look complicated it's pretty simple to understand.  You're basically telling the Mac to forward the "http", "https", "public.html", and "public.url" calls to "com.google.chrome", which is the bundle identifier for Google Chrome.</p>
+
+
+<h3>Set other browsers as default</h3>
+
+<p>Each application has its own bundle identifier.  Here's the identifiers for the most common web browsers for OS X.</p>
+
+<table>
+	<thead>
+		<tr>
+			<th>Browser</th>
+			<th>Bundle ID</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>Safari</td>
+			<td>com.apple.Safari</td>
+		</tr>
+		<tr>
+			<td>Google Chrome</td>
+			<td>com.google.chrome</td>
+		</tr>
+		<tr>
+			<td>Opera</td>
+			<td>com.operasoftware.Opera</td>
+		</tr>
+		<tr>
+			<td>Firefox</td>
+			<td>org.mozilla.firefox</td>
+		</tr>
+	</tbody>
+</table>
+
+<p>Simply replace the bundle identifier within <a href="/snippet/example-default-web-browser-plist/">this snippet</a> with the one for your web browser.</p>
+
+<p>If your browser isn't listed here, or the list becomes out of date, you can <a href="/snippet/retrieve-bundle-identifier/">retrieve the bundle identifier</a> yourself.</p>
+
+
+<h3>Copy plist file to the server</h3>
+
+<p>If you didn't create the plist file on the server, copy the file to it now.  If you're not sure how to do this, use a USB memory drive.</p>
+
+
+<h3>Set preference for all users</h3>
+
+<p>Now let's open Workgroup Manager.  Your setup may differ from mine, and if it is, don't worry.  I've got two groups, which together encapsulate all of my users.</p>
+
+<p>Select all the groups that you want to apply the default web browser to.  Click on "Preferences" from the tool bar, and then select the "Details" tab.  If you've uploaded your own preferences, or edited preferences within the "Overview" tab you'll see a list of Property List files within the box already.</p>
+
+<a href="/img/guide-ss/configure-default-web-browser-add-plist.jpg"><img src="/img/guide-ss/configure-default-web-browser-add-plist.jpg" class="guide-ss" alt="MCX:  Configure default web browser - Workgroup Manager preference pane" title="Example of what the preference pane should look like"></a>
+
+<p>Click on the plus button, and browse to the location where your <code>com.apple.LaunchServices.plist</code> file is located, which should be on the Desktop.</p>
+
+<p>Select it and ensure the "Manage imported preferences" is set to "Often".  You can change this option if you want, but choosing "Often" will enforce the configuration.  A user may be able to change the default browser when the "Often" option is chosen, but when they log out and back in, it should be changed back to Google Chrome.</p>
+
+<a href="/img/guide-ss/configure-default-web-browser-browse-to-plist.jpg"><img src="/img/guide-ss/configure-default-web-browser-browse-to-plist.jpg" class="guide-ss" alt="MCX:  Configure default web browser - Choose the com.apple.LaunchServices.plist file" title="Choose the com.apple.LaunchServices.plist file using the browse window"></a>
+
+<p>You can also associate this preference with a specific user, computer, or computer group, but if all of your Macs use the same browser, it doesn't matter where you apply the preference.</p>
+
+					</article>
+
+					<div class="module comments">
+
+            <div id="disqus_thread"></div>
+					    <script type="text/javascript">
+					    	/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+					      var disqus_shortname = 'ehcho'; // required: replace example with your forum shortname
+
+					        /* * * DON'T EDIT BELOW THIS LINE * * */
+					        (function() {
+					            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+					            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+					            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+					        })();
+					    </script>
+					    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    
+       		</div>
+
+        </div><!-- grid-3-4 -->
+
+        <div class="grid-1-3">
+
+          <div class="module sidebar quick-steps">
+					
+						<h3>Quick Steps</h3>
+
+						 <ol> <li>Login to server</li> <li>Open a plain text editor</li> <li>Copy and paste XML code</li> <li>Save as com.apple.LaunchServices.plist</li> <li>Open Workgroup Manager</li> <li>Select groups</li> <li>Import preference</li> </ol> 
+
+					</div><!-- /quick-steps -->
+
+					<div class="module sidebar applications-used">
+					
+						<h3>Applications Used</h3>
+
+						 <ul> <li>TextEdit</li> <li>Workgroup Manager</li> <li>Finder</li> </ul>
+
+					</div><!-- /applications-used -->
+
+          <div class="module sidebar twitter">
+
+	<h3>Social</h3>
+	
+	<nav class="social-media">
+		<a href="https://twitter.com/morgrowe" class="twitter-link" rel="nofollow">Twitter</a><a href="https://plus.google.com/100277447707872105379" class="google-link" rel="nofollow">Google+</a>
+	</nav>
+
+</div><!-- /latest-snippet -->
+          
+          <div class="module sidebar comments">
+	<a href="#disqus_thread">
+		<h3>Leave a comment &rarr;</h3>
+	</a>
+</div><!-- /latest-snippet -->
+          
+          <div class="module sidebar latest-snippet">
+	
+	<h3>Latest Snippet</h3>
+
+	
+
+	<a href="/snippet/fetch-a-macs-serial-number">
+		<h4>Fetch a Mac's serial number &rarr;</h4>
+	</a>
+
+	<p>Use this command to fetch serial numbers from your client machines with ease.</p>
+
+	
+
+</div><!-- /latest-snippet -->
+          <div class="module sidebar latest-guide">
+	
+	<h3>Latest Guide</h3>
+
+	
+
+	<a href="/guide/remotely-boot-windows-into-osx">
+		<h4>Remotely boot Windows into OS X &rarr;</h4>
+	</a>
+
+	<p>Is there a way to boot multiple Macs from Windows into OS X remotely using nothing but another Mac?  The answer is yes, Winexe!</p>
+
+	
+
+</div><!-- /latest-snippet -->
+
+        </div><!-- grid-1-4 -->
+
+      </div><!-- /grid -->
+
+    </div><!-- /outer-grid -->
+
+
+    <div class="footer-wrap">
+
+      <footer class="main-footer group">
+
+        <div class="copyright">
+
+	<p>&copy; Copyright 2014.  Content is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" target="_blank" rel="nofollow">CC BY 3.0</a>. Powered by <a href="http://jekyllrb.com/" target="_blank" rel="nofollow">Jekyll</a>.</p>
+
+</div><!-- /copyright -->
+
+<nav class="social"><a href="#">Jump to the top</a></nav><!-- /social -->
+
+<nav class="sub-nav"><a href="/project">Projects</a><a href="/contact">Contact</a><a href="/advertising">Advertising</a><a href="/article-archive">Article Archive</a></nav><!-- /sub-nav -->
+
+      </footer><!-- /main-footer -->
+
+    </div><!-- /footer-wrap -->
+
+    
+<script>
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-32156132-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+  </body>
+</html>

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+  <head>
+      <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Binding to Active Directory | Ehcho.com</title>
+      <meta name="viewport" content="width=device-width">
+      <link href="http://fonts.googleapis.com/css?family=Raleway:300|Noto+Sans:400,700" rel="stylesheet" type="text/css">
+      <link rel="stylesheet" href="/css/main.css">
+      <meta name="description" content="Connecting Macs to Active Directory is a straight forward task.  In this article, I cover the process in depth and discuss issues you may have.">
+      <link rel="author" href="https://plus.google.com/100277447707872105379/posts">
+      
+  </head>
+  <body>
+
+    <div class="header-wrap">
+
+        <header class="main-header group">
+
+	<a href="/" class="site-title">
+	  <h1>Ehcho.com</h1>
+	</a>
+
+	<nav class="main-nav">
+
+	  <a href="/">Home</a><a href="/guide">Guides</a><a href="/snippet">Snippets</a>
+	  
+	</nav><!-- /main-nav -->
+
+</header><!-- /main-header -->
+
+    </div><!-- /header-wrap -->
+
+    <div class="outer-grid group">
+
+      <div class="grid group">
+
+        <div class="grid-2-3">
+
+          <div class="module breadcrumbs half-padding">
+
+  <p><a href="/">Home</a> &rarr; <a href="/guide"><span class="categories">guide</span></a> &rarr; Binding to Active Directory</p>
+
+</div><!-- /breadcrums -->
+
+          <article class="module post">
+
+					  <h2 class="post-title">Binding to Active Directory</h2>
+
+						<p class="date">By Morgan Rowe | 31 Jul 2013</p>
+
+						<p>Binding a Mac to Active Directory (AD) is a relatively simple process, which can be accomplished using tools that come with your Mac.</p>
+
+<p>Before you start, you should ensure your current version of OSX is fully up to date. Making sure your operating system is up to date is extremely important as the latest patches improve the security and reliability of the Active Directory plugin – among other things. At the time of writing this article, 10.7.5 and 10.8.3 have been released. I’ve tested this technique on both operating systems but haven’t tested it on Snow Leopard or lower.</p>
+<p>In order to connect to AD, you’ll need to know your domain name. This is the same domain name you’d use to connect your Windows clients to AD. Also make sure your Macs are connected to the same network as your AD controllers and that the time on your Macs are in sync with AD.</p>
+
+<h3>Getting started</h3>
+
+<p>To start, we need to log into the client Mac as an administrator.</p>
+<p>Open System Preferences, which can be found within the /Applications folder or accessed from the Apple menu in the top left of the screen.</p>
+<p>Firstly, we need to make sure that our computer has a desirable computer name. If you’re setting up a suite of computers, you’ll probably want to use a naming convention. To change the computer name, click on Sharing. Once the pane loads, you’ll have the option to change the computer name to something more appropriate. Make sure you don’t use any weird characters or spaces as this may cause issues later on. If you need to separate words, I suggest you use an underscore, or a dash. Once you’ve entered your computer name, press return and click on the “Show All” button at the top of the System Preferences window.</p>
+
+<h3>Binding to Actice Directory</h3>
+<p>Let’s bind our Mac to AD. Click on Users &amp; Groups and when the pane loads, click on Login Options and then click “Join”. If the Join button is grayed out, you’ll need to unlock the preference pane by clicking on the padlock, which is located at the bottom left of the window. You’ll be prompted for the local administrator password.  Enter it and press return.</p>
+<p>Once the Join window appears, click on the plus button and type in your domain name. The window should expand with three input boxes. The client computer ID, username and password. The client computer ID will be the name of the computer record stored within AD, which is usually the computer name. The requested username and password is for an AD account that has privileges to bind computers to AD. This is usually just the AD administrator account.</p>
+<p>Once this information is supplied, click OK and the Mac will attempt to bind to AD. It should bind successfully but if it doesn’t, here’s a few issues I’ve come across in the past.</p>
+
+<h3>Troubleshooting</h3>
+
+<p>Unsynchronised time is the most common issue I’ve come across. Ensure that the time on the Mac is the same as the time on your AD controllers. The time settings on a Mac can be edited within the “Date &amp; Time” preference pane. Also make sure that the date is the same as well! This has caught me out in the past.</p>
+
+<p>I’ve also noticed that the Macs refuse to bind to AD when multiple network adapters are enabled. Try disabling the WiFi adapter and then attempt to bind to AD. You can reenable the adapter after the Mac has bound to AD.  To disable the WiFi adapter, open System Preferences and click on Network.  Click on the WiFi adapter and move your mouse to small cog button, located near the bottom of Network window.  Click on it and choose "Make Service Inactive".  After a couple of seconds, the WiFi adapter should have been disabled.</p>
+
+<p>Sometimes there’s just no good reason why the Mac won’t bind and unfortunately the error messages produced are not very helpful. You can always try to restart the Mac – sometimes this helps.</p>
+
+<h3>Configuring the Login Window</h3>
+<p>If you bound to AD successfully, you’ll now be able to log in using your AD credentials. Before testing this, go back the Users &amp; Groups pane and change the “Display login window as” setting to “Name and Password”. This’ll give you a username and password box on the login screen, instead of thumbnails that represent users.</p>
+
+<h3>Login to an Active Directory account</h3>
+
+<p>Log off the Mac and attempt to login using your credentials. You may notice a red or yellow orb in the username box. This shows you the AD login status. If it’s red, you won’t be able to log in and if it’s yellow, you may be able to. Eventually the orb will disappear, allowing everyone to log in with their credentials. No matter what orb colour is being displayed, you’ll always be able to login to the local accounts that have been setup on the Mac.</p>
+<p>Once the orb disappears, log in using your AD username and password. Once the Mac loads, you should see your user area in the Dock. It will appear as a folder and when clicked, it’ll reveal the contents of your user area. You can drag and drop stuff into it as well.</p>
+
+<h3>Troubleshooting</h3>
+
+<p>If you get a question mark in the Dock, this is likely to do with folder permissions. Windows and OSX work out whether someone should have access to a folder differently. OSX requires a user to have read rights to all folders that encapsulate their user area. So if your AD folder structure looks something like this: /myserver/staff/bob, you’ll need to make sure “bob” has read permissions to all folders leading up to his user area.</p>
+
+
+					</article>
+
+					<div class="module comments">
+
+            <div id="disqus_thread"></div>
+					    <script type="text/javascript">
+					    	/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+					      var disqus_shortname = 'ehcho'; // required: replace example with your forum shortname
+
+					        /* * * DON'T EDIT BELOW THIS LINE * * */
+					        (function() {
+					            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+					            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+					            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+					        })();
+					    </script>
+					    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    
+       		</div>
+
+        </div><!-- grid-3-4 -->
+
+        <div class="grid-1-3">
+
+          <div class="module sidebar quick-steps">
+					
+						<h3>Quick Steps</h3>
+
+						<p>Open System Preferences > Users & Groups.  Choose 'Login Options' and then click on 'Join'.  Type in your domain and press OK.</p>
+
+					</div><!-- /quick-steps -->
+
+					<div class="module sidebar applications-used">
+					
+						<h3>Applications Used</h3>
+
+						 <ul> <li>System Preferences</li> <li>Finder</li> </ul>
+
+					</div><!-- /applications-used -->
+
+          <div class="module sidebar twitter">
+
+	<h3>Social</h3>
+	
+	<nav class="social-media">
+		<a href="https://twitter.com/morgrowe" class="twitter-link" rel="nofollow">Twitter</a><a href="https://plus.google.com/100277447707872105379" class="google-link" rel="nofollow">Google+</a>
+	</nav>
+
+</div><!-- /latest-snippet -->
+          
+          <div class="module sidebar comments">
+	<a href="#disqus_thread">
+		<h3>Leave a comment &rarr;</h3>
+	</a>
+</div><!-- /latest-snippet -->
+          
+          <div class="module sidebar latest-snippet">
+	
+	<h3>Latest Snippet</h3>
+
+	
+
+	<a href="/snippet/fetch-a-macs-serial-number">
+		<h4>Fetch a Mac's serial number &rarr;</h4>
+	</a>
+
+	<p>Use this command to fetch serial numbers from your client machines with ease.</p>
+
+	
+
+</div><!-- /latest-snippet -->
+          <div class="module sidebar latest-guide">
+	
+	<h3>Latest Guide</h3>
+
+	
+
+	<a href="/guide/remotely-boot-windows-into-osx">
+		<h4>Remotely boot Windows into OS X &rarr;</h4>
+	</a>
+
+	<p>Is there a way to boot multiple Macs from Windows into OS X remotely using nothing but another Mac?  The answer is yes, Winexe!</p>
+
+	
+
+</div><!-- /latest-snippet -->
+
+        </div><!-- grid-1-4 -->
+
+      </div><!-- /grid -->
+
+    </div><!-- /outer-grid -->
+
+
+    <div class="footer-wrap">
+
+      <footer class="main-footer group">
+
+        <div class="copyright">
+
+	<p>&copy; Copyright 2014.  Content is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" target="_blank" rel="nofollow">CC BY 3.0</a>. Powered by <a href="http://jekyllrb.com/" target="_blank" rel="nofollow">Jekyll</a>.</p>
+
+</div><!-- /copyright -->
+
+<nav class="social"><a href="#">Jump to the top</a></nav><!-- /social -->
+
+<nav class="sub-nav"><a href="/project">Projects</a><a href="/contact">Contact</a><a href="/advertising">Advertising</a><a href="/article-archive">Article Archive</a></nav><!-- /sub-nav -->
+
+      </footer><!-- /main-footer -->
+
+    </div><!-- /footer-wrap -->
+
+    
+<script>
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-32156132-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+  </body>
+</html>

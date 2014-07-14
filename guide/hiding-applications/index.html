@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+  <head>
+      <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Hiding Applications | Ehcho.com</title>
+      <meta name="viewport" content="width=device-width">
+      <link href="http://fonts.googleapis.com/css?family=Raleway:300|Noto+Sans:400,700" rel="stylesheet" type="text/css">
+      <link rel="stylesheet" href="/css/main.css">
+      <meta name="description" content="There are many ways to restrict applications in Mac OS X but one of the simplest methods I use is hiding applications.  Hiding applications is a simple way of denying your users access to specific applications.  The technique can also be used to hide folders and files.">
+      <link rel="author" href="https://plus.google.com/100277447707872105379/posts">
+      
+  </head>
+  <body>
+
+    <div class="header-wrap">
+
+        <header class="main-header group">
+
+	<a href="/" class="site-title">
+	  <h1>Ehcho.com</h1>
+	</a>
+
+	<nav class="main-nav">
+
+	  <a href="/">Home</a><a href="/guide">Guides</a><a href="/snippet">Snippets</a>
+	  
+	</nav><!-- /main-nav -->
+
+</header><!-- /main-header -->
+
+    </div><!-- /header-wrap -->
+
+    <div class="outer-grid group">
+
+      <div class="grid group">
+
+        <div class="grid-2-3">
+
+          <div class="module breadcrumbs half-padding">
+
+  <p><a href="/">Home</a> &rarr; <a href="/guide"><span class="categories">guide</span></a> &rarr; Hiding Applications</p>
+
+</div><!-- /breadcrums -->
+
+          <article class="module post">
+
+					  <h2 class="post-title">Hiding Applications</h2>
+
+						<p class="date">By Morgan Rowe | 31 Jul 2013</p>
+
+						<p>There are many ways to restrict applications in Mac OS X but one of the simplest methods I use is hiding applications.  Hiding applications is a simple way of denying your users access to specific applications.  The technique can also be used to hide folders and files.</p>
+
+<h3>Browse to the application using Terminal</h3>
+
+<p>In order to hide applications, you must first log in as an administrator.</p>
+
+<p>Once you've logged in, open Terminal.  Terminal can be found within <code>/Applications/Utilities</code>.  Once opened, you'll be prompted for a command.  Applications are stored within the <code>/Applications</code> folder so we'll need to navigate ourselves to that folder within the command line.  Type the command below followed by enter.</p>
+
+<code class="multiline"><pre>cd /Applications</pre></code>
+
+<p>We're now in the Applications folder.  You can confirm this by typing "pwd" and hitting enter.  The command will output our current directory.</p>
+
+<p>In order to hide applications, we need to rename them with a period in front of its file name.  I'm going to hide the App Store, seeing as you generally don't want your users to access this application.  However, you can use the same technique for hiding any application, file, or folder you desire.</p>
+
+<p>We're going to grant ourselves temporary higher privileges to ensure we don't get prompted for our password every time we rename an application.  This is an optional step and I don't recommend it if you're not comfortable using the command line.  If you've decided not to run this command for security reasons, you'll have to append <code>"sudo mv"</code> to the front of each command.  For example, instead of typing <code>"mv App\ Store.app .App\ Store.app"</code>, you'll have to type <code>"mv App\ Store.app .App\ Store.app"</code>.  In order to grant ourself these higher privileges, we enter the following command, followed by your password.</p>
+
+<code class="multiline"><pre>sudo -s</pre></code>
+
+<p>We can now do anything we want without being asked for our password again.  This will save us time.</p>
+
+<h3>Hide the application using the "mv" command</h3>
+
+<p>Although we don't see a file extension in the Finder, all apps end with the <code>".app"</code> extension.  With this in mind, we're going to use the "mv" command to rename the application.  Enter the command below followed by return.</p>
+
+<code class="multiline"><pre>mv App\ Store.app .App\ Store.app</pre></code>
+
+<p>You'll notice the backslashes in the command.  The backslashes tell the command to escape the following character.  If you didn't put the backslashes in, the command wouldn't have worked because all the command line would have read is "mv App", which does nothing.  You only need to type the backslashes when there're spaces in the application name.</p>
+
+<p>If you didn't get an error the application has been hidden.  You can confirm this by opening a Finder window and browsing to the Applications folder.  You shouldn't be able to see the App Store.  The "App Store" menu item under the Apple menu will still be able to open the application, though.  If the application was in your Dock, you'll also notice that upon clicking on the App Store, it still loads.  However, this would not be the case for a user account, only for an administrator, making this an effective technique for "disabling" applications for your users.</p>
+
+<h3>Find hidden applications</h3>
+
+<p>Go back to the Terminal and type the following command and hit enter.</p>
+
+<code class="multiline"><pre>ls -lah</pre></code>
+
+<p>This command lists the contents of the current directory.  You can see all your applications, including the hidden ones right at the top.</p>
+
+<p>Make sure you logout of the superseded user permissions by typing this command.</p>
+
+<code class="multiline"><pre>exit</pre></code>
+
+<p></p>
+
+<h3>Reveal a hidden application</h3>
+
+<p>If you decide in a couple of days time that you want to unhide the App Store, you just need to rename back to it's original name, like so:</p>
+
+<code class="multiline"><pre>mv .App\ Store.app App\ Store.app</pre></code>
+
+<p>Of course, if you've already closed Terminal, you'll have to repeat the above steps, which have been outlined in the Quick Steps section.  If you want to do it the quickest way, you could run the following command to unhide the hidden App Store application.</p>
+
+<code class="multiline"><pre>sudo mv /Applications/.App\ Store.app /Applications/App\ Store.app</pre></code>
+
+<p>This is a good technique for hiding administrative applications or applications that may distract your users.  I find hiding the Address Book, App Store, Automator, FaceTime, Mail, Text Edit, Time Machine, iChat and iTunes to be most effective. I also hide a lot of the Utilities within the Utilities folder.</p>
+
+					</article>
+
+					<div class="module comments">
+
+            <div id="disqus_thread"></div>
+					    <script type="text/javascript">
+					    	/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+					      var disqus_shortname = 'ehcho'; // required: replace example with your forum shortname
+
+					        /* * * DON'T EDIT BELOW THIS LINE * * */
+					        (function() {
+					            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+					            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+					            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+					        })();
+					    </script>
+					    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    
+       		</div>
+
+        </div><!-- grid-3-4 -->
+
+        <div class="grid-1-3">
+
+          <div class="module sidebar quick-steps">
+					
+						<h3>Quick Steps</h3>
+
+						<p>Prepend a period (.) to any file, or folder name to hide it in the Finder.
+
+					</div><!-- /quick-steps -->
+
+					<div class="module sidebar applications-used">
+					
+						<h3>Applications Used</h3>
+
+						 <ul> <li>Terminal</li> <li>Finder</li> </ul>
+
+					</div><!-- /applications-used -->
+
+          <div class="module sidebar twitter">
+
+	<h3>Social</h3>
+	
+	<nav class="social-media">
+		<a href="https://twitter.com/morgrowe" class="twitter-link" rel="nofollow">Twitter</a><a href="https://plus.google.com/100277447707872105379" class="google-link" rel="nofollow">Google+</a>
+	</nav>
+
+</div><!-- /latest-snippet -->
+          
+          <div class="module sidebar comments">
+	<a href="#disqus_thread">
+		<h3>Leave a comment &rarr;</h3>
+	</a>
+</div><!-- /latest-snippet -->
+          
+          <div class="module sidebar latest-snippet">
+	
+	<h3>Latest Snippet</h3>
+
+	
+
+	<a href="/snippet/fetch-a-macs-serial-number">
+		<h4>Fetch a Mac's serial number &rarr;</h4>
+	</a>
+
+	<p>Use this command to fetch serial numbers from your client machines with ease.</p>
+
+	
+
+</div><!-- /latest-snippet -->
+          <div class="module sidebar latest-guide">
+	
+	<h3>Latest Guide</h3>
+
+	
+
+	<a href="/guide/remotely-boot-windows-into-osx">
+		<h4>Remotely boot Windows into OS X &rarr;</h4>
+	</a>
+
+	<p>Is there a way to boot multiple Macs from Windows into OS X remotely using nothing but another Mac?  The answer is yes, Winexe!</p>
+
+	
+
+</div><!-- /latest-snippet -->
+
+        </div><!-- grid-1-4 -->
+
+      </div><!-- /grid -->
+
+    </div><!-- /outer-grid -->
+
+
+    <div class="footer-wrap">
+
+      <footer class="main-footer group">
+
+        <div class="copyright">
+
+	<p>&copy; Copyright 2014.  Content is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" target="_blank" rel="nofollow">CC BY 3.0</a>. Powered by <a href="http://jekyllrb.com/" target="_blank" rel="nofollow">Jekyll</a>.</p>
+
+</div><!-- /copyright -->
+
+<nav class="social"><a href="#">Jump to the top</a></nav><!-- /social -->
+
+<nav class="sub-nav"><a href="/project">Projects</a><a href="/contact">Contact</a><a href="/advertising">Advertising</a><a href="/article-archive">Article Archive</a></nav><!-- /sub-nav -->
+
+      </footer><!-- /main-footer -->
+
+    </div><!-- /footer-wrap -->
+
+    
+<script>
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-32156132-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+  </body>
+</html>
