@@ -3,7 +3,7 @@
   <head>
       <meta charset="utf-8">
       <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-      <title>Remotely boot Windows into OS X | Ehcho.com</title>
+      <title>Boot into OS X from Windows using the command line | Ehcho.com</title>
       <meta name="viewport" content="width=device-width">
       <link href="http://fonts.googleapis.com/css?family=Raleway:300|Noto+Sans:400,700" rel="stylesheet" type="text/css">
       <link rel="stylesheet" href="/css/main.css">
@@ -39,17 +39,17 @@
 
           <div class="module breadcrumbs half-padding">
 
-  <p><a href="/">Home</a> &rarr; <a href="/guide"><span class="categories">guide</span></a> &rarr; Remotely boot Windows into OS X</p>
+  <p><a href="/">Home</a> &rarr; <a href="/guide"><span class="categories">guide</span></a> &rarr; Boot into OS X from Windows using the command line</p>
 
 </div><!-- /breadcrums -->
 
           <article class="module post">
 
-					  <h2 class="post-title">Remotely boot Windows into OS X</h2>
+					  <h2 class="post-title">Boot into OS X from Windows using the command line</h2>
 
 						<p class="date">By Morgan Rowe | 11 Feb 2014</p>
 
-						<p>If you have a large amount of dual booted Macs, you may find that most, if not, all of them have been booted into Windows when you'd like to do some work on OS X.  Personally, I'm able to accomplish most of my tasks using Apple Remote Desktop, so the most time consuming aspect of trying to deploy changes to the Macs is turning them on.  If you turn them on and they boot into Windows, it's a bit of a pain to boot them back into OS X.  You can login to Windows and use the Boot Camp utility in the system tray to change the startup disk, or hold down the option key at startup to select the OS X partition from the list.</pw>
+						<p>If you have a large amount of dual booted Macs, you may find that most, if not, all of them have been booted into Windows when you'd like to do some work on OS X.  Personally, I'm able to accomplish most of my tasks using Apple Remote Desktop, so the most time consuming aspect of trying to deploy changes to the Macs is turning them on.  If you turn them on and they boot into Windows, it's a bit of a pain to boot them back into OS X.  You can login to Windows and use the Boot Camp utility in the system tray to change the startup disk, or hold down the option key at startup to select the OS X partition from the list.</p>
 
 <p>As I'm lazy, I wanted a way to do this from my MacBook (currently running OS X 10.9.1) as I don't fancy individually booting each Mac into OS X using the methods mentioned above.  So, is there a way to boot multiple Macs from Windows into OS X remotely using nothing but another Mac?  The answer is yes, Winexe!</p>
 
@@ -61,7 +61,7 @@
 
 <p>There're very clear instructions on how to install <a href="http://brew.sh/" target="_blank">Homebrew</a> on their website.  Open Terminal and run the following command.  I advise you go to Homebrew's website to check they haven't changed their <a href="http://brew.sh/#install" target="_blank">installation instructions</a>, but here's how I did it:</p>
 
-<code class="multiline"><pre>ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"</pre></code>
+<code class="multiline"><pre>ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)"</pre></code>
 
 <p>Allow it to download and install.  When it runs, you’ll be asked to verify that the changes it’ll make to your file system are OK, and to provide your administrator password.  You may be asked to install some Xcode command line developer tools, let Software Update find and install the software for you by clicking on “Install”.</p>
 

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+  <head>
+      <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Disable Welcome to Google Chrome | Ehcho.com</title>
+      <meta name="viewport" content="width=device-width">
+      <link href="http://fonts.googleapis.com/css?family=Raleway:300|Noto+Sans:400,700" rel="stylesheet" type="text/css">
+      <link rel="stylesheet" href="/css/main.css">
+      <meta name="description" content="When Google Chrome is opened for the first time your users will be prompted by a dialog window named Welcome to Google Chrome.">
+      <link rel="author" href="https://plus.google.com/100277447707872105379/posts">
+      
+  </head>
+  <body>
+
+    <div class="header-wrap">
+
+        <header class="main-header group">
+
+	<a href="/" class="site-title">
+	  <h1>Ehcho.com</h1>
+	</a>
+
+	<nav class="main-nav">
+
+	  <a href="/">Home</a><a href="/guide">Guides</a><a href="/snippet">Snippets</a>
+	  
+	</nav><!-- /main-nav -->
+
+</header><!-- /main-header -->
+
+    </div><!-- /header-wrap -->
+
+    <div class="outer-grid group">
+
+      <div class="grid group">
+
+        <div class="grid-2-3">
+
+          <div class="module breadcrumbs half-padding">
+
+  <p><a href="/">Home</a> &rarr; <a href="/guide"><span class="categories">guide</span></a> &rarr; Disable Welcome to Google Chrome</p>
+
+</div><!-- /breadcrums -->
+
+          <article class="module post">
+
+					  <h2 class="post-title">Disable Welcome to Google Chrome</h2>
+
+						<p class="date">By Morgan Rowe | 05 Oct 2015</p>
+
+						<p>When Google Chrome is opened for the first time your users will be prompted by a dialog window named Welcome to Google Chrome. The dialog window asks the user to confirm Chrome as their default browser and whether or not to send their diagnostic information to Google. Although your users can simply click "Start Google Chrome" and use Chrome normally, it's still a bit of a nuisance especially the same user is likely to see the pop-up each time they swap machine like in a 1:X or lab environment.</p>
+
+<a href="/img/guide-ss/disable-welcome-to-google-chrome-dialog-window.jpg"><img src="/img/guide-ss/disable-welcome-to-google-chrome-dialog-window.jpg" class="guide-ss" alt="Disable Welcome to Google Chrome - Dialog window" title="Disable Welcome to Google Chrome - Dialog window"></a>
+
+<p>You'd think there would be some sort of a option to negate this functionality. To the best of my knowledge, there's no way to do so using Chrome's system-wide or user property list files, or even using one of the extremely powerful <a href="https://www.chromium.org/administrators/configuring-other-preferences" target="_blank" rel="nofollow">Google Chrome Master Preferences options</a>. There's even an <a href="https://code.google.com/p/chromium/issues/detail?id=224410" target="_blank" rel="nofollow">open chromium-project ticket regarding the issue</a>, but it doesn't look like the problem has been resolved yet.</p> 
+
+<p>However, you can get Chrome to never show the Welcome to Google Chrome dialog window by ensuring the folders <code>~/Library/Application Support/Google/Chrome/Default</code>, and files <code>~/Library/Application Support/Google/Chrome/First Run</code> and <code>~/Library/Application Support/Google/Chrome/Default/Preferences</code> are present when Chrome opens. We don't even need to add anything to the First Run or Preferences file, just ensure they're present. It's worth noting that using this technique may have detrimental effects on the performance or stability of Google Chrome, but this solution has been deployed across a fleet of around 200 Macs for a number of months with no reports of any issues.</p>
+
+<p>These files need to be present before Chrome launches and you might have noticed that the files need to be in the user's home folder. We have several options for making this happen, but the three I'm most comfortable using are LoginHooks, LaunchAgents and editing the User Template. LoginHooks are depreciated but still work really well. LaunchAgents are cool, but unreliable at doing tasks before the user is able to interact with the OS. The final option is putting the files into the User Template, which is the method we'll be going for today.</p>
+
+<p>Using the User Template for this sort of task has two main concerns. The first is the fact we're editing the User Template itself. It is located within <code>/System/Library/</code>. We're not encouraged to modify any of the files within <code>/System/</code> as they can be changed or deleted at any time without warning, sometimes during an OS update. You could write LaunchDaemons or use something like <a href="https://puppetlabs.com/" target="_blank" rel="nofollow">Puppet</a> to ensure the files are always present in the User Template. The second concern is that the User Template is only used once—when the user account is generated during login. This means if you're trying to use this technique to modify existing user accounts, this isn't the option for you, but to be fair if the user has already logged in, they've probably dismissed Chrome's first run dialog box already.</p>
+
+<p>I'm going to assume you want to deploy this 'hack' across a fleet of Macs, rather than just one, so we'll be writing a bash script to add the required files to the User Template that can be deployed using <a href="http://www.apple.com/uk/remotedesktop/" target="_blank" rel="nofollow">Remote Desktop</a>, <a href="https://www.munki.org" target="_blank" rel="nofollow">Munki</a> or any of the other deployment tools out there. The most up to date script can be found within <a href="https://github.com/morgrowe/ehcho-public/tree/master/Disable%20Welcome%20to%20Google%20Chrome" target="_blank" rel="nofollow">my blog's public repo on GitHub</a> with comments and human readable white spacing, but if you want a quick copy of it, here is it:</p>
+
+<code class="multiline"><pre>#!/bin/bash
+
+if [ "$(/usr/bin/id -u)" != 0 ]; then
+	exit 0
+fi
+
+for userTemplatePath in "/System/Library/User Template"/*; do
+	/bin/mkdir -p "${userTemplatePath}"/Library/Application\ Support/Google/Chrome/Default
+	/usr/bin/touch "${userTemplatePath}"/Library/Application\ Support/Google/Chrome/First\ Run
+	/usr/bin/touch "${userTemplatePath}"/Library/Application\ Support/Google/Chrome/Default/Preferences
+	/usr/sbin/chown -R root:wheel "${userTemplatePath}"/Library/Application\ Support/Google
+	/bin/chmod -R 700 "${userTemplatePath}"/Library/Application\ Support/Google
+done
+
+exit 0</pre></code>
+
+<p>In essence, the script loops through the localization files within User Template and creates the required folder structure for this 'hack' to work. It finishes up by ensuring the permissions are correct.</p>
+
+<p>That's it! Use something like <a href="https://derflounder.wordpress.com/2014/03/08/payload-free-package-creator-app/" target="_blank" rel="nofollow">Payload-Free Package Creator</a> to embed this bash script into a package and deploy it to your fleet of Macs.</p>
+
+<p>Tested on Chrome 43-45 and OS X 10.10 - 10.10.5.</p>
+
+					</article>
+
+					<div class="module comments">
+
+            <div id="disqus_thread"></div>
+					    <script type="text/javascript">
+					    	/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+					      var disqus_shortname = 'ehcho'; // required: replace example with your forum shortname
+
+					        /* * * DON'T EDIT BELOW THIS LINE * * */
+					        (function() {
+					            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+					            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+					            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+					        })();
+					    </script>
+					    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    
+       		</div>
+
+        </div><!-- grid-3-4 -->
+
+        <div class="grid-1-3">
+
+          <div class="module sidebar quick-steps">
+					
+						<h3>Quick Steps</h3>
+
+						<p>Head over to <a href="https://github.com/morgrowe/ehcho-public/tree/master/Disable%20Welcome%20to%20Google%20Chrome" target="_blank" rel="nofollow">my GitHub repo</a> and download the latest script. Run it.</p>
+
+					</div><!-- /quick-steps -->
+
+					<div class="module sidebar applications-used">
+					
+						<h3>Applications Used</h3>
+
+						 <ul> <li>Plain text editor</li> </ul>
+
+					</div><!-- /applications-used -->
+
+          <div class="module sidebar twitter">
+
+	<h3>Social</h3>
+	
+	<nav class="social-media">
+		<a href="https://twitter.com/morgrowe" class="twitter-link" rel="nofollow">Twitter</a><a href="https://plus.google.com/100277447707872105379" class="google-link" rel="nofollow">Google+</a>
+	</nav>
+
+</div><!-- /latest-snippet -->
+          
+          <div class="module sidebar comments">
+	<a href="#disqus_thread">
+		<h3>Leave a comment &rarr;</h3>
+	</a>
+</div><!-- /latest-snippet -->
+          
+          <div class="module sidebar latest-snippet">
+	
+	<h3>Latest Snippet</h3>
+
+	
+
+	<a href="/snippet/fetch-a-macs-serial-number">
+		<h4>Fetch a Mac's serial number &rarr;</h4>
+	</a>
+
+	<p>Use this command to fetch serial numbers from your client machines with ease.</p>
+
+	
+
+</div><!-- /latest-snippet -->
+          <div class="module sidebar latest-guide">
+	
+	<h3>Latest Guide</h3>
+
+	
+
+	<a href="/guide/disable-welcome-to-google-chrome">
+		<h4>Disable Welcome to Google Chrome &rarr;</h4>
+	</a>
+
+	<p>When Google Chrome is opened for the first time your users will be prompted by a dialog window named Welcome to Google Chrome.</p>
+
+	
+
+</div><!-- /latest-snippet -->
+
+        </div><!-- grid-1-4 -->
+
+      </div><!-- /grid -->
+
+    </div><!-- /outer-grid -->
+
+
+    <div class="footer-wrap">
+
+      <footer class="main-footer group">
+
+        <div class="copyright">
+
+	<p>&copy; Copyright 2014.  Content is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" target="_blank" rel="nofollow">CC BY 3.0</a>. Hosted by <a href="https://pages.github.com/" target="_blank">GitHub</a>. Powered by <a href="http://jekyllrb.com/" target="_blank" rel="nofollow">Jekyll</a>.</p>
+
+</div><!-- /copyright -->
+
+<nav class="social"><a href="#">Jump to the top</a></nav><!-- /social -->
+
+<nav class="sub-nav"><a href="/project">Projects</a><a href="/contact">Contact</a><a href="/advertising">Advertising</a><a href="/article-archive">Article Archive</a></nav><!-- /sub-nav -->
+
+      </footer><!-- /main-footer -->
+
+    </div><!-- /footer-wrap -->
+
+    
+<script>
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-32156132-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+  </body>
+</html>
