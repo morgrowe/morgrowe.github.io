@@ -3,11 +3,11 @@
   <head>
       <meta charset="utf-8">
       <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-      <title>Disable Accessibility Options shortcut | Ehcho.com</title>
+      <title>Disable AirPlay Mirroring | Ehcho.com</title>
       <meta name="viewport" content="width=device-width">
       <link href="http://fonts.googleapis.com/css?family=Raleway:300|Noto+Sans:400,700" rel="stylesheet" type="text/css">
       <link rel="stylesheet" href="/css/main.css">
-      <meta name="description" content="If you hold down Command, Option and F5, a window will appear that gives you accessibility options.  Although this is a great feature that gives you quick and easy access to the accessibility options, you may want to disable this functionality to prevent your users from enabling options like 'Slow Keys', or 'Sticky Keys'.">
+      <meta name="description" content="Mac OS X Mountain Lion came with a great feature called AirPlay mirroring.  It allowed any Mac created during 2011 or later to wirelessly stream their display to any AppleTVs connected to the same network as the Mac.  This feature is useful at home but in a school or business environment, you may not want your users to AirPlay mirror.">
       <link rel="author" href="https://plus.google.com/100277447707872105379/posts">
       
   </head>
@@ -39,75 +39,45 @@
 
           <div class="module breadcrumbs half-padding">
 
-  <p><a href="/">Home</a> &rarr; <a href="/guide"><span class="categories">guide</span></a> &rarr; Disable Accessibility Options shortcut</p>
+  <p><a href="/">Home</a> &rarr; <a href="/guide"><span class="categories">guide</span></a> &rarr; Disable AirPlay Mirroring</p>
 
 </div><!-- /breadcrums -->
 
           <article class="module post">
 
-					  <h2 class="post-title">Disable Accessibility Options shortcut</h2>
+					  <h2 class="post-title">Disable AirPlay Mirroring</h2>
 
-						<p class="date">By Morgan Rowe | 04 Dec 2013</p>
+						<p class="date">By Morgan Rowe | 31 Jul 2013</p>
 
-						<p>If you hold down Command, Option and F5, a window will appear that gives you accessibility options.  Although this is a great feature that gives you quick and easy access to the accessibility options, you may want to disable this functionality to prevent your users from enabling options like "Slow Keys", or "Sticky Keys".</p>
+						<p>Mac OS X Mountain Lion came with a great feature called AirPlay mirroring.  It allowed <a href="http://support.apple.com/kb/ht5404" target="_blank" rel="nofollow">most Macs created during 2011 or later</a> to wirelessly stream their display to any AppleTVs connected to the same network as the Mac.  This feature is useful at home but in a school or business environment, you may not want your users to do this.</p>
 
-<a href="/img/guide-ss/disable-accessibility-options-shortcut-options-window.jpg"><img src="/img/guide-ss/disable-accessibility-options-shortcut-options-window.jpg" class="guide-ss" alt="Disable Accessibility Options shortcut - Accessibility Options window" title="The accessilbility options window"></a>
+<h3>Disable AirPlay Mirroring</h3>
 
-<h3>Disable shortcut for the users</h3>
+<p>Unfortunately, Apple hasn't provided an easy way to disable this functionality but we can use a satisfactory method to achieve this.  In order to disable AirPlay mirroring, we have to deny the computer access to the application that allows the computer to AirPlay mirror.</p>
 
-<p>If you're using Workgroup Manager to manage your user account preferences, you can create a file named com.apple.symbolichotkeys.plist and paste this XML into the file:</p>
+<p>We can do this by typing the following command into Terminal.  Terminal can be found in <code>/Applications/Utilities</code>.</p>
 
-<code class="multiline"><pre>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
-&lt;!DOCTYPE plist PUBLIC &quot;-//Apple//DTD PLIST 1.0//EN&quot; &quot;http://www.apple.com/DTDs/PropertyList-1.0.dtd&quot;&gt;
-&lt;plist version=&quot;1.0&quot;&gt;
-&lt;dict&gt;
-  &lt;key&gt;AppleSymbolicHotKeys&lt;/key&gt;
-  &lt;dict&gt;
-    &lt;key&gt;162&lt;/key&gt;
-    &lt;dict&gt;
-      &lt;key&gt;enabled&lt;/key&gt;
-      &lt;false/&gt;
-      &lt;key&gt;value&lt;/key&gt;
-      &lt;dict&gt;
-        &lt;key&gt;type&lt;/key&gt;
-        &lt;string&gt;standard&lt;/string&gt;
-        &lt;key&gt;parameters&lt;/key&gt;
-        &lt;array&gt;
-          &lt;integer&gt;65535&lt;/integer&gt;
-          &lt;integer&gt;96&lt;/integer&gt;
-          &lt;integer&gt;1572864&lt;/integer&gt;
-        &lt;/array&gt;
-      &lt;/dict&gt;
-    &lt;/dict&gt;
-  &lt;/dict&gt;
-&lt;/dict&gt;
-&lt;/plist&gt;</pre></code>
+<code class="multiline"><pre>sudo chmod 000 /System/Library/CoreServices/AirPlayUIAgent.app/Contents/MacOS/AirPlayUIAgent</pre></code>
 
-<p>Apply this preference to all of your users within Workgroup Manager.
- 
-<p>This disables the Command, Option and F5 shortcut.
+<p>Press return and enter the local administrator password.</p>
 
-<p>However, this only disables the shortcut to the functionality, and also doesn't prevent users from doing this on the loginwindow.
+<p>Restart the Mac and log back in.</p>
 
-<h3>Disable UniversalAccessControl globally</h3>
+<p>If you try to AirPlay mirror to an AppleTV now, the AirPlay icon will stay blue, as if it's still trying to connect but it never will, therefore, disabling AirPlay mirroring.</p>
 
-<p>You can prevent this by renaming the UniversalAccessControl application.  Open Terminal (<code>/Applications/Utilities</code>) and run the following command:</p>
+<h3>Drawbacks</h3>
 
-<code class="multiline"><pre>sudo mv /System/Library/CoreServices/UniversalAccessControl.app /System/Library/CoreServices/UniversalAccessControl-backup.app</pre></code>
+<p>The only drawback to this method is that it locks up the menubar, which means your users won't be able to use any of the menu bar items.  They're still able to adjust the volume using the keyboard, though.  Logging out and back in will restore the functionality of the menubar until the user tries to use AirPlay mirroring again.  I guess if your users complain about the menubar crashing, you know what they've been trying to do!</p>
 
-<p>This prevents the application from being executed when the shortcut is performed.</p>
+<p>To remove your users temptation of crashing the menu bar all the time, you can hide the AirPlay icon by opening <code>System Preferences > Displays</code> and unchecking the "Show mirroring options in the menu bar when available" checkbox.  However, this will only hide the AirPlay icon for that user so you'll need to copy the <code>com.apple.airplay.plist</code> file to all your users accounts.  You can do this using Workgroup Manager.</p>
 
-<h3>Enable UniversalAccessControl globally</h3>
+<h3>Reenable AirPlay Mirroring</h3>
 
-<p>As this method is non-destructive, you can reenable the functionality by running this command:</p>
+<p>To reenable the AirPlay mirroring functionality, you can run the following command using Terminal.</p>
 
-<code class="multiline"><pre>sudo mv /System/Library/CoreServices/UniversalAccessControl-backup.app /System/Library/CoreServices/UniversalAccessControl.app</pre></code>
+<code class="multiline"><pre>sudo chmod 755 /System/Library/CoreServices/AirPlayUIAgent.app/Contents/MacOS/AirPlayUIAgent</pre></code>
 
-<h3>Mass deploy</h3>
-
-<p>You can mass deploy this modification using Apple Remote Desktop.</p>
-
-<a href="/img/guide-ss/disable-accessibility-options-shortcut-mass-deploy-with-apple-remote-desktop.jpg"><img src="/img/guide-ss/disable-accessibility-options-shortcut-mass-deploy-with-apple-remote-desktop.jpg" class="guide-ss" alt="Disable Accessibility Options shortcut - Mass deploy solution using Apple Remote Desktop" title="Apple Remote Desktop being used to mass deploy the command."></a>
+<p>This will restore the original permissions to the binary, allowing it to function normally.  I always perform a restart after executing these sorts of commands.</p>
 
 					</article>
 
@@ -137,10 +107,7 @@
 					
 						<h3>Quick Steps</h3>
 
-						 <ol> <li>Copy contents of plist</li> <li>Save as com.apple.symbolichotkeys.plist</li> <li>Copy plist to server</li> <li>Import into WGM</li> <li>Apply to All Users</li> </ol>
-<p>Or</p>
-<ol> <li>Copy UNIX command</li> <li>Run UNIX command</li> <li>Mass distribute using ARD</li> </ol>
-
+						<p>Change the AirPlayUIAgent binary's permissions to 000.  Change them back to 755 to revert.</p>
 
 					</div><!-- /quick-steps -->
 
@@ -148,7 +115,7 @@
 					
 						<h3>Applications Used</h3>
 
-						 <ul> <li>Terminal</li> <li>Workgroup Manager</li> <li>Apple Remote Desktop</li> <li>Finder</li> </ul>
+						 <ul> <li>Terminal</li> </ul>
 
 					</div><!-- /applications-used -->
 
